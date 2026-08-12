@@ -1,25 +1,99 @@
 :root{
- --bg:#071018;
- --cyan:#27e7ff;
- --glass:rgba(255,255,255,.08);
+ --bg:#040b14;
+ --cyan:#22e6ff;
+ --turquoise:#00ffd5;
+ --green:#38ff9c;
+ --red:#ff5577;
+ --amber:#ffc857;
+ --glass:rgba(255,255,255,.07);
+ --border:rgba(34,230,255,.28);
 }
+
+*{box-sizing:border-box;}
+
 body{
  margin:0;
- background:radial-gradient(circle at top,var(--glass),var(--bg));
+ min-height:100vh;
+ background:
+ radial-gradient(circle at 20% 0%,rgba(34,230,255,.18),transparent 35%),
+ radial-gradient(circle at 90% 20%,rgba(0,255,213,.12),transparent 30%),
+ var(--bg);
  color:white;
  font-family:Inter,system-ui,sans-serif;
 }
-.glass-nav,.analyze-page{
- background:rgba(255,255,255,.06);
- backdrop-filter:blur(18px);
- border:1px solid rgba(39,231,255,.25);
- border-radius:20px;
+
+.glass-nav,
+.analyze-page,
+.results-page,
+.glass-card,
+.ai-panel,
+.ingredient-card{
+ background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
+ backdrop-filter:blur(20px);
+ border:1px solid var(--border);
+ box-shadow:0 0 35px rgba(34,230,255,.08);
+ border-radius:24px;
 }
+
+.ai-panel{
+ position:relative;
+ overflow:hidden;
+}
+
+.ai-panel::before{
+ content:"";
+ position:absolute;
+ inset:0;
+ background:linear-gradient(90deg,transparent,rgba(34,230,255,.25),transparent);
+ animation:scan 3s infinite;
+}
+
+.scan-line{
+ height:2px;
+ background:var(--cyan);
+ box-shadow:0 0 18px var(--cyan);
+ animation:moveScan 2s infinite;
+}
+
+.confidence-meter{
+ filter:drop-shadow(0 0 12px var(--cyan));
+}
+
+.status-halal{color:var(--green);}
+.status-warning{color:var(--amber);}
+.status-danger{color:var(--red);}
+
 button{
- background:transparent;
+ background:linear-gradient(135deg,rgba(34,230,255,.18),rgba(0,255,213,.08));
  color:white;
  border:1px solid var(--cyan);
  padding:12px 22px;
  border-radius:14px;
  cursor:pointer;
+ transition:.25s;
+}
+
+button:hover{
+ box-shadow:0 0 25px rgba(34,230,255,.45);
+ transform:translateY(-2px);
+}
+
+@keyframes scan{
+ from{transform:translateX(-100%);}
+ to{transform:translateX(100%);}
+}
+
+@keyframes moveScan{
+ from{transform:translateY(-40px);}
+ to{transform:translateY(200px);}
+}
+
+@media(max-width:700px){
+ .glass-nav,.analyze-page,.results-page{
+  border-radius:18px;
+  margin:12px;
+ }
+ .glass-card,.ingredient-card{
+  padding:14px;
+ }
 }
