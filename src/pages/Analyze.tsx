@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import ImageUploader from '../components/ImageUploader';
+import AIScanDashboard from '../components/AIScanDashboard';
 import ProcessingAnimation from '../components/ProcessingAnimation';
 import { analyzeIngredients } from '../services/analysisService';
 import { saveHistory } from '../services/localHistoryService';
@@ -15,23 +16,16 @@ export default function Analyze(){
    return;
   }
   setLoading(true);
-  setMessage('Reading ingredients and analyzing...');
+  setMessage('Running AI analysis...');
   const result=await analyzeIngredients(ingredients);
   localStorage.setItem('halallens_last_result', JSON.stringify(result));
-  saveHistory({
-   id: Date.now().toString(),
-   productName: 'Analyzed Product',
-   status: result.status,
-   ingredientsCount: result.ingredients.length,
-   date: new Date().toLocaleDateString()
-  });
+  saveHistory({id:Date.now().toString(),productName:'Analyzed Product',status:result.status,ingredientsCount:result.ingredients.length,date:new Date().toLocaleDateString()});
   setLoading(false);
   setMessage(`Analysis complete: ${result.status}`);
  };
 
  return <main className="analyze-page">
-  <h1>AI Ingredient Scanner</h1>
-  <p>Step 1 — Capture your ingredient label</p>
+  <AIScanDashboard />
   <ImageUploader />
   <textarea value={ingredients} onChange={e=>setIngredients(e.target.value)} placeholder="Enter ingredients manually..." />
   <button onClick={run}>Analyze Product</button>
