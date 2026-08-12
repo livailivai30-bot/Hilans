@@ -1,35 +1,52 @@
 import React from 'react';
+import { AnalysisResult } from '../types';
 
-const ingredients = [
-  { name: 'Sugar', status: 'HALAL', note: 'No issue identified from available information.' },
-  { name: 'E471', status: 'NEEDS VERIFICATION', note: 'Source may vary and requires manufacturer confirmation.' },
-  { name: 'Gelatin', status: 'NEEDS VERIFICATION', note: 'Depends on animal source and certification.' }
-];
+const demoResult: AnalysisResult = {
+  productName: 'Choco Crunch',
+  status: 'NEEDS_VERIFICATION',
+  confidence: 0.95,
+  analysisDate: new Date().toISOString(),
+  ingredients: [
+    {
+      name: 'Gelatin',
+      alternatives: ['E441'],
+      category: 'Protein',
+      status: 'NEEDS_VERIFICATION',
+      explanation: 'Depends on animal source and certification.',
+      sourceDependency: true,
+      confidence: 0.9,
+      references: ['Ingredient database']
+    }
+  ]
+};
 
 export default function Results(){
+  const result = demoResult;
+  const icon = result.status === 'HALAL' ? '🟢' : result.status === 'NOT_HALAL' ? '🔴' : '🟡';
+
   return (
     <main className="results-page">
       <section className="glass-card">
-        <h1>Choco Crunch</h1>
-        <h2>🟡 NEEDS VERIFICATION</h2>
-        <p>Analysis confidence: 95%</p>
+        <h1>{result.productName}</h1>
+        <h2>{icon} {result.status.replace('_',' ')}</h2>
+        <p>Analysis confidence: {Math.round(result.confidence * 100)}%</p>
       </section>
 
       <section className="glass-card">
         <h3>Ingredient Analysis</h3>
-        {ingredients.map(item => (
+        {result.ingredients.map(item => (
           <article key={item.name} className="ingredient-card">
             <strong>{item.name}</strong>
-            <span>{item.status}</span>
-            <p>{item.note}</p>
+            <span>{item.status.replace('_',' ')}</span>
+            <p>{item.explanation}</p>
           </article>
         ))}
       </section>
 
       <section className="glass-card">
         <h3>Why this result?</h3>
-        <p>The product contains ingredients whose sources cannot be confirmed from the label alone.</p>
-        <p>Check halal certification or contact the manufacturer for verification.</p>
+        <p>Ingredients with unknown sources require verification before making a final conclusion.</p>
+        <p>Check halal certification or contact the manufacturer.</p>
       </section>
     </main>
   );
