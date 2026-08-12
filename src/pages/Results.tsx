@@ -1,33 +1,27 @@
 import React from 'react';
 import { AnalysisResult } from '../types';
 
-const demoResult: AnalysisResult = {
-  productName: 'Choco Crunch',
-  status: 'NEEDS_VERIFICATION',
-  confidence: 0.95,
-  analysisDate: new Date().toISOString(),
-  ingredients: [
-    {
-      name: 'Gelatin',
-      alternatives: ['E441'],
-      category: 'Protein',
-      status: 'NEEDS_VERIFICATION',
-      explanation: 'Depends on animal source and certification.',
-      sourceDependency: true,
-      confidence: 0.9,
-      references: ['Ingredient database']
-    }
-  ]
-};
-
 export default function Results(){
-  const result = demoResult;
+  const stored = localStorage.getItem('halallens_last_result');
+  const result: AnalysisResult | null = stored ? JSON.parse(stored) : null;
+
+  if (!result) {
+    return (
+      <main className="results-page">
+        <section className="glass-card">
+          <h1>No analysis yet</h1>
+          <p>Run a product analysis first to see results.</p>
+        </section>
+      </main>
+    );
+  }
+
   const icon = result.status === 'HALAL' ? '🟢' : result.status === 'NOT_HALAL' ? '🔴' : '🟡';
 
   return (
     <main className="results-page">
       <section className="glass-card">
-        <h1>{result.productName}</h1>
+        <h1>{result.productName || 'Analyzed Product'}</h1>
         <h2>{icon} {result.status.replace('_',' ')}</h2>
         <p>Analysis confidence: {Math.round(result.confidence * 100)}%</p>
       </section>
@@ -45,8 +39,8 @@ export default function Results(){
 
       <section className="glass-card">
         <h3>Why this result?</h3>
-        <p>Ingredients with unknown sources require verification before making a final conclusion.</p>
-        <p>Check halal certification or contact the manufacturer.</p>
+        <p>{result.explanation || 'Ingredients were evaluated using available information.'}</p>
+        <p>Verify uncertain sources with the manufacturer or halal certification authority.</p>
       </section>
     </main>
   );
