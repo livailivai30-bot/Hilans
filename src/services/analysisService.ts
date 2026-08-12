@@ -23,16 +23,19 @@ const database: Record<string, Ingredient> = {
   }
 };
 
+const normalize = (value: string) => value.toLowerCase().trim();
+
 export async function analyzeIngredients(text: string): Promise<AnalysisResult> {
-  const names = text.toLowerCase().split(',').map(x => x.trim()).filter(Boolean);
+  const names = text.split(',').map(normalize).filter(Boolean);
+
   const ingredients = names.map(name => database[name] ?? {
     name,
     alternatives: [],
     category: 'Unknown',
-    status: 'HALAL',
-    explanation: 'No issue identified from available information.',
-    sourceDependency: false,
-    confidence: 0.75,
+    status: 'NEEDS_VERIFICATION',
+    explanation: 'No reliable classification is available yet. The source or processing needs verification.',
+    sourceDependency: true,
+    confidence: 0.4,
     references: ['Demo database']
   });
 
@@ -45,7 +48,7 @@ export async function analyzeIngredients(text: string): Promise<AnalysisResult> 
   return {
     productName: 'Demo Product',
     status,
-    confidence: Math.round(ingredients.reduce((a,b)=>a+b.confidence,0)/ingredients.length*100)/100,
+    confidence: Math.round((ingredients.reduce((a, b) => a + b.confidence, 0) / ingredients.length) * 100) / 100,
     ingredients,
     analysisDate: new Date().toISOString()
   };
